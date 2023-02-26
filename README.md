@@ -2,7 +2,9 @@
 ### Salesforce Network Access Record Finder
 [![NPM](https://img.shields.io/npm/v/snarf.svg?label=snarf)](https://www.npmjs.com/package/snarf) [![Downloads/week](https://img.shields.io/npm/dw/snarf.svg)](https://npmjs.org/package/snarf) [![License](https://img.shields.io/badge/License-BSD%203--Clause-brightgreen.svg)](https://raw.githubusercontent.com/salesforcecli/snarf/main/LICENSE.txt)
 
-![Snarf](https://raw.githubusercontent.com/matt-newell/snarf/main/assets/snarf.png?raw=true)
+<p align="right>
+  <img alt="Snarf" width="30%" src="https://raw.githubusercontent.com/matt-newell/snarf/main/assets/snarf.png">
+</p>
 
 
 ## Using the template
