@@ -13,29 +13,32 @@ salesforce
 • mode
 • identifier
 
-# flags.name.summary
+# flags.account.summary
 
-The name of the person you'd like to say hello to.
+The Account for Snowflake ❄️
+# flags.username.summary
+
+The Username for Snowflake ❄️
 
 # flags.target-org.summary
 
-The name of the person you'd like to say hello to.
+Target Salesforce Org to create Bulk v2 Job
 
 # flags.sobject.summary
 
-The sobject of the data you'd like to say hello to.
+The sobject of the data you'd like to sync .
 
 # flags.method.summary
 
-The method of the data you'd like to say hello to.
+The method of the data you'd like to sync ☁️.
 
 # flags.extIdField.summary
 
-The extIdField of the data you'd like to say hello to.
+The extIdField of the data you'd like to Upsert ☁️.
 
 # flags.query.summary
 
-The query of the data you'd like to say hello to.
+The query of the data you'd like to sync ❄️.
 
 # examples
 
