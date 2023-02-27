@@ -1,15 +1,5 @@
 import { expect, test } from '@oclif/test';
-// import { SnowflakeImportResult } from '../../../src/commands/snowflake/import';
-
-export type SnowflakeImportResult = {
-  account: string;
-  username: string;
-  sobject: string;
-  method: string;
-  extIdField: string;
-  query: string;
-  time: string;
-};
+import { SnowflakeImportResult } from '../../../src/commands/snowflake/types';
 
 describe('hello world', () => {
   // test

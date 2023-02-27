@@ -1,18 +1,8 @@
 import { execCmd, TestSession } from '@salesforce/cli-plugins-testkit';
 import { expect } from 'chai';
-// import { SnowflakeImportResult } from '../../../src/commands/snowflake/import';
+import { SnowflakeImportResult } from '../../../src/commands/snowflake/types';
 
 let testSession: TestSession;
-
-export type SnowflakeImportResult = {
-  account: string;
-  username: string;
-  sobject: string;
-  method: string;
-  extIdField: string;
-  query: string;
-  time: string;
-};
 
 describe('hello world NUTs', () => {
   before('prepare session', async () => {
