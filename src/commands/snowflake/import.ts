@@ -1,13 +1,15 @@
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
-import { Messages } from '@salesforce/core';
+import { Connection, Messages } from '@salesforce/core';
+import {snowflake} from 'snowflake-sdk';
+import * as sfbulk2 from 'node-sf-bulk2';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.load('snarf', 'snowflake.import', [
   'summary',
   'description',
   'examples',
-
-  'flags.name.summary',
+  'flags.account.summary',
+  'flags.username.summary',
   'flags.sobject.summary',
   'flags.method.summary',
   'flags.extIdField.summary',
@@ -16,7 +18,12 @@ const messages = Messages.load('snarf', 'snowflake.import', [
 ]);
 
 export type SnowflakeImportResult = {
-  name: string;
+  account: string;
+  username: string;
+  sobject: string;
+  method: string;
+  extIdField: string;
+  query: string;
   time: string;
 };
 
@@ -30,10 +37,15 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
         char: 'o',
         required: true
       }),
-      name: Flags.string({
-        char: 'n',
-        summary: messages.getMessage('flags.name.summary'),
-        default: 'World',
+      account: Flags.string({
+        char: 'a',
+        summary: messages.getMessage('flags.account.summary'),
+        required: true
+      }),
+      username: Flags.string({
+        char: 'u',
+        summary: messages.getMessage('flags.username.summary'),
+        required: true
       }),
       sobject: Flags.string({
         char: 's',
@@ -55,25 +67,98 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
         summary: messages.getMessage('flags.query.summary')
       }),
     };
-  
+
+    private arrayToCSV(data) {
+      const csv = data.map(row => Object.values(row));
+      csv.unshift(Object.keys(data[0]));
+      return csv.join('\n');
+    }
+
+    private async snowflakeConn(account:string, username:string, sql:string): Promise<any> {
+      const connection = snowflake.createConnection({
+        // account: "sga53801",
+        // username: "mnewell",
+        account: account,
+        username: username,
+        authenticator: "EXTERNALBROWSER",
+      })
+      connection.connectAsync()
+      .then(() => {
+        connection.execute({
+          sqlText: sql,
+          complete: function (err, stmt, rows) {
+            if (err) {
+              console.error(
+                "Failed to execute statement due to the following error: " +
+                err.message
+              )
+            } else {
+              // console.log("Number of rows produced: " + rows.length)
+              // return bulkv2(JSON.parse(JSON.stringify(rows)))
+              return rows
+            }
+          },
+        })
+      })
+    }
+
+    private async salesforceBulk(conn:Connection, sobject:string, operation:string, extIdField:string, transientData:any): Promise<any> {
+      const bulkConnect = {
+        'accessToken': conn.accessToken,
+        'apiVersion': '51.0',
+        'instanceUrl': conn.instanceUrl
+      }
+      const bulkrequest = new sfbulk2.BulkAPI2(bulkConnect)
+      // create a bulk insert job
+      const jobRequest = {
+        'object': sobject,
+        'operation': operation,
+        'contentType': 'CSV',
+        'externalIdFieldName': extIdField
+      };
+      // request job
+      const response = await bulkrequest.createDataUploadJob(jobRequest)
+      if (response.id) {
+        const status = await bulkrequest.uploadJobData(response.contentUrl, this.arrayToCSV(transientData))
+        console.log('status', JSON.stringify(status))
+        if (status === 201) {
+            // close the job for processing
+            await bulkrequest.closeOrAbortJob(response.id, 'UploadComplete');
+            return response
+        }
+      }
+    }
+
     public async run(): Promise<SnowflakeImportResult> {
       const { flags } = await this.parse(SnowflakeImport);
       const time = new Date().toDateString();
-      
-      const conn = flags['target-org'].getConnection(flags['api-version']);
-      
-      
+
+      const snowQuery = await this.snowflakeConn(
+        flags.account,
+        flags.username,
+        flags.query
+      )
+
+      const conn = flags['target-org'].getConnection();
+      const bulkJob = this.salesforceBulk(conn, flags.sobject, flags.method, flags.extIdField, snowQuery)
+
+      this.log('bulkJob',bulkJob)
       this.log(messages.getMessage('info.snowflake', [
-        flags.name, 
+        flags.account, 
+        flags.username, 
         flags.sobject, 
         flags.method, 
         flags.extIdField, 
         flags.query, 
-        time
       ]));
       return {
-        name: flags.name,
-        time,
+        account: flags.account,
+        username: flags.username,
+        sobject: flags.sobject,
+        method: flags.method,
+        extIdField: flags.extIdField,
+        query: flags.query,
+        time: time
       };
     }
   }

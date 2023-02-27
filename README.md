@@ -23,11 +23,13 @@ USAGE
   $ sf snowflake import -o <value> [--json] [-s <value>] [-m <value>] [-e <value>] [-q <value>]
 
 FLAGS
-  -e, --extIdField=<value>  [default: Id] The extIdField of the data you'd like to say hello to.
-  -m, --method=<value>      [default: Upsert] The method of the data you'd like to say hello to.
+  -a, --account=<value>     (required) The Account for Snowflake ❄️
+  -e, --extIdField=<value>  [default: Id] The extIdField of the data you'd like to Upsert ☁️.
+  -m, --method=<value>      [default: Upsert] The method of the data you'd like to sync ☁️.
   -o, --target-org=<value>  (required) Username or alias of the target org.
-  -q, --query=<value>       The query of the data you'd like to say hello to.
-  -s, --sobject=<value>     [default: Account] The sobject of the data you'd like to say hello to.
+  -q, --query=<value>       The query of the data you'd like to sync ❄️.
+  -s, --sobject=<value>     [default: Account] The sobject of the data you'd like to sync .
+  -u, --username=<value>    (required) The Username for Snowflake ❄️
 
 GLOBAL FLAGS
   --json  Format output as json.
