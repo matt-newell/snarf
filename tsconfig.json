@@ -2,12 +2,7 @@
   "extends": "@salesforce/dev-config/tsconfig",
   "compilerOptions": {
     "outDir": "lib",
-    "rootDir": "src",
-    "esModuleInterop": true
-  },
-  "ts-node": {
-    "esm": true,
-    "experimentalSpecifierResolution": "node",
+    "rootDir": "src"
   },
   "include": ["./src/**/*.ts"]
 }

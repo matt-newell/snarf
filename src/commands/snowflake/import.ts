@@ -1,7 +1,7 @@
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
-import { Connection, Messages, Org } from '@salesforce/core';
-// import {snowflake} from 'snowflake-sdk';
-import {sfbulk2} from 'node-sf-bulk2';
+import { Connection, Messages } from '@salesforce/core';
+import {snowflake} from 'snowflake-sdk';
+import * as sfbulk2 from 'node-sf-bulk2';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.load('snarf', 'snowflake.import', [
@@ -68,40 +68,38 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
       }),
     };
 
-    
-
-    // private async snowflakeConn(account:string, username:string, sql:string): Promise<any> {
-    //   const connection = snowflake.createConnection({
-    //     // account: "sga53801",
-    //     // username: "mnewell",
-    //     account: account,
-    //     username: username,
-    //     authenticator: "EXTERNALBROWSER",
-    //   })
-    //   connection.connectAsync()
-    //   .then(() => {
-    //     connection.execute({
-    //       sqlText: sql,
-    //       complete: function (err, stmt, rows) {
-    //         if (err) {
-    //           console.error(
-    //             "Failed to execute statement due to the following error: " +
-    //             err.message
-    //           )
-    //         } else {
-    //           // console.log("Number of rows produced: " + rows.length)
-    //           // return bulkv2(JSON.parse(JSON.stringify(rows)))
-    //           return rows
-    //         }
-    //       },
-    //     })
-    //   })
-    // }
-
     private arrayToCSV(data) {
       const csv = data.map(row => Object.values(row));
       csv.unshift(Object.keys(data[0]));
       return csv.join('\n');
+    }
+
+    private async snowflakeConn(account:string, username:string, sql:string): Promise<any> {
+      const connection = snowflake.createConnection({
+        // account: "sga53801",
+        // username: "mnewell",
+        account: account,
+        username: username,
+        authenticator: "EXTERNALBROWSER",
+      })
+      connection.connectAsync()
+      .then(() => {
+        connection.execute({
+          sqlText: sql,
+          complete: function (err, stmt, rows) {
+            if (err) {
+              console.error(
+                "Failed to execute statement due to the following error: " +
+                err.message
+              )
+            } else {
+              // console.log("Number of rows produced: " + rows.length)
+              // return bulkv2(JSON.parse(JSON.stringify(rows)))
+              return rows
+            }
+          },
+        })
+      })
     }
 
     private async salesforceBulk(conn:Connection, sobject:string, operation:string, extIdField:string, transientData:any): Promise<any> {
@@ -119,13 +117,14 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
         'externalIdFieldName': extIdField
       };
       // request job
-      let response = await bulkrequest.createDataUploadJob(jobRequest)
+      const response = await bulkrequest.createDataUploadJob(jobRequest)
       if (response.id) {
         const status = await bulkrequest.uploadJobData(response.contentUrl, this.arrayToCSV(transientData))
         console.log('status', JSON.stringify(status))
         if (status === 201) {
             // close the job for processing
             await bulkrequest.closeOrAbortJob(response.id, 'UploadComplete');
+            return response
         }
       }
     }
@@ -133,19 +132,17 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
     public async run(): Promise<SnowflakeImportResult> {
       const { flags } = await this.parse(SnowflakeImport);
       const time = new Date().toDateString();
-      
-      // const snowQuery = await this.snowflakeConn(
-      //   flags.account,
-      //   flags.username,
-      //   flags.query
-      // )
-      
-      // this.log(snowQuery)
+
+      const snowQuery = await this.snowflakeConn(
+        flags.account,
+        flags.username,
+        flags.query
+      )
 
       const conn = flags['target-org'].getConnection();
+      const bulkJob = this.salesforceBulk(conn, flags.sobject, flags.method, flags.extIdField, snowQuery)
 
-
-
+      this.log('bulkJob',bulkJob)
       this.log(messages.getMessage('info.snowflake', [
         flags.account, 
         flags.username, 

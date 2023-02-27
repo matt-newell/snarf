@@ -69,8 +69,8 @@
       "@oclif/plugin-help"
     ],
     "topics": {
-      "hello": {
-        "description": "Commands to say hello."
+      "snowflake": {
+        "description": "Commands to import data from Snowflake"
       }
     }
   },
