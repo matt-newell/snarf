@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@oclif/test": "^2.3.4",
-    "@salesforce/cli-plugins-testkit": "^3.0.0",
+    "@salesforce/cli-plugins-testkit": "^3.2.25",
     "@salesforce/dev-config": "^3.1.0",
     "@salesforce/dev-scripts": "^3.1.0",
     "@salesforce/prettier-config": "^0.0.2",
@@ -32,7 +32,7 @@
     "eslint-plugin-jsdoc": "^39.3.6",
     "eslint-plugin-sf-plugin": "^1.1.0",
     "husky": "^7.0.4",
-    "mocha": "^9.2.2",
+    "mocha": "^10.2.0",
     "nyc": "^15.1.0",
     "oclif": "^3.6.1",
     "prettier": "^2.7.1",
@@ -89,7 +89,7 @@
     "prepack": "sf-prepack",
     "pretest": "sf-compile-test",
     "test": "sf-test",
-    "test:nuts": "nyc mocha \"**/*.nut.ts\" --slow 4500 --timeout 600000 --parallel",
+    "test:nuts": "nyc mocha \"**/*.nut.ts\" --slow 4500 --timeout 600000 --parallel --require ts-node/register",
     "version": "oclif readme"
   },
   "publishConfig": {

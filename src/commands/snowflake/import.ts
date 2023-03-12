@@ -3,7 +3,16 @@ import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Connection, Messages } from '@salesforce/core';
 import {snowflake} from 'snowflake-sdk';
 import * as sfbulk2 from 'node-sf-bulk2';
-import {SnowflakeImportResult} from './types'
+// import {SnowflakeImportResult} from '../types'
+export type SnowflakeImportResult = {
+  account: string;
+  username: string;
+  sobject: string;
+  method: string;
+  extIdField: string;
+  query: string;
+  time: string;
+};
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.load('snarf', 'snowflake.import', [
@@ -66,7 +75,7 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
       return csv.join('\n');
     }
 
-    private async snowflakeConn(account:string, username:string, sql:string): Promise<any> {
+    private async snowflakeConn(account:string, username:string, sql:string) {
       const statement = fs.readFileSync(sql, "utf8");
 
       const connection = snowflake.createConnection({
@@ -96,7 +105,7 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
       })
     }
 
-    private async salesforceBulk(conn:Connection, sobject:string, operation:string, extIdField:string, transientData:any): Promise<any> {
+    private async salesforceBulk(conn:Connection, sobject:string, operation:string, extIdField:string, transientData) {
       const bulkConnect = {
         'accessToken': conn.accessToken,
         'apiVersion': '51.0',

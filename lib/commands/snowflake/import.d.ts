@@ -1,5 +1,5 @@
 import { SfCommand } from '@salesforce/sf-plugins-core';
-import { SnowflakeImportResult } from './types';
+import { SnowflakeImportResult } from '../types';
 export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
     static readonly summary: string;
     static readonly description: string;
