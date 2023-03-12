@@ -79,8 +79,6 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
       const statement = fs.readFileSync(sql, "utf8");
 
       const connection = snowflake.createConnection({
-        // account: "sga53801",
-        // username: "mnewell",
         account: account,
         username: username,
         authenticator: "EXTERNALBROWSER",
@@ -136,10 +134,12 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
       const { flags } = await this.parse(SnowflakeImport);
       const time = new Date().toDateString();
 
+      const sqlQuery = fs.readFileSync(flags.query,{encoding:'utf8', flag:'r'})
+
       const snowQuery = await this.snowflakeConn(
         flags.account,
         flags.username,
-        flags.query
+        sqlQuery
       )
 
       const conn = flags['target-org'].getConnection();
