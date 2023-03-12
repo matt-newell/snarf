@@ -7,10 +7,8 @@ import * as snowflake from 'snowflake-sdk';
 export type SnowflakeImportResult = {
   account: string;
   username: string;
-  sobject: string;
-  method: string;
-  extIdField: string;
   query: string;
+  data: object;
   time: string;
 };
 
@@ -72,7 +70,7 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
                   console.log(err)
                   return stmt
               }
-              return rows
+              return {rows, stmt}
             }
           },
         })
@@ -92,18 +90,13 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
       this.log('bulkJob',snowQuery)
       this.log(messages.getMessage('info.snowflake', [
         flags.account, 
-        flags.username, 
-        flags.sobject, 
-        flags.method, 
-        flags.extIdField, 
+        flags.username,
         flags.query, 
       ]));
       return {
         account: flags.account,
         username: flags.username,
-        sobject: flags.sobject,
-        method: flags.method,
-        extIdField: flags.extIdField,
+        data: snowQuery,
         query: flags.query,
         time: time
       };
