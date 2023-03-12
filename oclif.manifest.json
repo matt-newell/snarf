@@ -1,0 +1,85 @@
+{
+  "version": "0.0.1",
+  "commands": {
+    "snowflake:import": {
+      "id": "snowflake:import",
+      "summary": "Snowflake ❄️ > Salesforce ☁️",
+      "description": "snowflake\n• clientId\n• oAuth\n• query\n\nsalesforce\n• sObject\n• mode\n• identifier",
+      "strict": true,
+      "pluginName": "snarf",
+      "pluginAlias": "snarf",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "Say hello to the world:\n<%= config.bin %> <%= command.id %>",
+        "Say hello to someone you know:\n<%= config.bin %> <%= command.id %> --name Astro"
+      ],
+      "flags": {
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "description": "Format output as json.",
+          "helpGroup": "GLOBAL",
+          "allowNo": false
+        },
+        "target-org": {
+          "name": "target-org",
+          "type": "option",
+          "char": "o",
+          "summary": "Username or alias of the target org.",
+          "required": true,
+          "multiple": false
+        },
+        "account": {
+          "name": "account",
+          "type": "option",
+          "char": "a",
+          "summary": "The Account for Snowflake ❄️",
+          "required": true,
+          "multiple": false
+        },
+        "username": {
+          "name": "username",
+          "type": "option",
+          "char": "u",
+          "summary": "The Username for Snowflake ❄️",
+          "required": true,
+          "multiple": false
+        },
+        "sobject": {
+          "name": "sobject",
+          "type": "option",
+          "char": "s",
+          "summary": "The sobject of the data you'd like to sync .",
+          "multiple": false,
+          "default": "Account"
+        },
+        "method": {
+          "name": "method",
+          "type": "option",
+          "char": "m",
+          "summary": "The method of the data you'd like to sync ☁️.",
+          "multiple": false,
+          "default": "Upsert"
+        },
+        "extIdField": {
+          "name": "extIdField",
+          "type": "option",
+          "char": "e",
+          "summary": "The extIdField of the data you'd like to Upsert ☁️.",
+          "multiple": false,
+          "default": "Id"
+        },
+        "query": {
+          "name": "query",
+          "type": "option",
+          "char": "q",
+          "summary": "The query of the data you'd like to sync ❄️.",
+          "multiple": false
+        }
+      },
+      "args": {},
+      "hasDynamicHelp": true
+    }
+  }
+}
