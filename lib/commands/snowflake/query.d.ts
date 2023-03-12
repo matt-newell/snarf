@@ -1,14 +1,12 @@
 import { SfCommand } from '@salesforce/sf-plugins-core';
-export type SnowflakeImportResult = {
+export type SnowflakeQueryResult = {
     account: string;
     username: string;
-    sobject: string;
-    method: string;
-    extIdField: string;
     query: string;
+    data: any;
     time: string;
 };
-export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
+export default class SnowflakeQuery extends SfCommand<SnowflakeQueryResult> {
     static readonly summary: string;
     static readonly description: string;
     static readonly examples: string[];
@@ -18,5 +16,5 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
         query: import("@oclif/core/lib/interfaces").OptionFlag<string, import("@oclif/core/lib/interfaces/parser").CustomOptions>;
     };
     snowflakeConn(account: string, username: string, sql: string): Promise<void>;
-    run(): Promise<SnowflakeImportResult>;
+    run(): Promise<SnowflakeQueryResult>;
 }

@@ -3,12 +3,12 @@ import { Messages } from '@salesforce/core';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import * as snowflake from 'snowflake-sdk';
 
-// import {SnowflakeImportResult} from '../types'
-export type SnowflakeImportResult = {
+// import {SnowflakeQueryResult} from '../types'
+export type SnowflakeQueryResult = {
   account: string;
   username: string;
   query: string;
-  data: object;
+  data: any;
   time: string;
 };
 
@@ -23,7 +23,7 @@ const messages = Messages.load('snarf', 'snowflake.query', [
   'info.snowflake',
 ]);
 
-export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
+export default class SnowflakeQuery extends SfCommand<SnowflakeQueryResult> {
     public static readonly summary = messages.getMessage('summary');
     public static readonly description = messages.getMessage('description');
     public static readonly examples = messages.getMessages('examples');
@@ -48,14 +48,14 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
     public async snowflakeConn(account:string, username:string, sql:string) {
       const sqlQuery = await readFile(sql,{encoding:'utf8', flag:'r'})
 
-      const connection = snowflake.createConnection({
+      const connection = await snowflake.createConnection({
         account: account,
         username: username,
         authenticator: "EXTERNALBROWSER",
-      })
+      })<any>
       connection.connectAsync()
       .then(() => {
-        connection.execute({
+          connection.execute({
           sqlText: sqlQuery,
           complete: (err, stmt, rows) => {
             if (err) {
@@ -66,19 +66,21 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
             } else {
               // console.log("Number of rows produced: " + rows.length)
               // return bulkv2(JSON.parse(JSON.stringify(rows)))
+              console.log(`number of rows ${stmt.getNumRows()}`);
+              
               if(err) {
                   console.log(err)
                   return stmt
               }
-              return {rows, stmt}
+              return rows
             }
           },
         })
       })
     }
 
-    public async run(): Promise<SnowflakeImportResult> {
-      const { flags } = await this.parse(SnowflakeImport);
+    public async run(): Promise<SnowflakeQueryResult> {
+      const { flags } = await this.parse(SnowflakeQuery);
       const time = new Date().toDateString();
 
       const snowQuery = await this.snowflakeConn(
