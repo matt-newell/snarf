@@ -1,8 +1,9 @@
 import { readFile } from 'fs/promises';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Connection, Messages } from '@salesforce/core';
-import {snowflake} from 'snowflake-sdk';
 import * as sfbulk2 from 'node-sf-bulk2';
+import * as snowflake from 'snowflake-sdk';
+
 // import {SnowflakeImportResult} from '../types'
 export type SnowflakeImportResult = {
   account: string;
