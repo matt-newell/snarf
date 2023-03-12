@@ -75,6 +75,7 @@
     }
   },
   "scripts": {
+    "snarf": "node ./assets/snarf.js",
     "build": "sf-build",
     "clean": "sf-clean",
     "clean-all": "sf-clean all",
