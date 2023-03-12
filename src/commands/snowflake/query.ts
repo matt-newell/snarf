@@ -72,6 +72,7 @@ export default class SnowflakeQuery extends SfCommand<SnowflakeQueryResult> {
                   console.log(err)
                   return stmt
               }
+              console.table(rows)
               return rows
             }
           },
