@@ -1,13 +1,5 @@
 import { SfCommand } from '@salesforce/sf-plugins-core';
-export type SnowflakeImportResult = {
-    account: string;
-    username: string;
-    sobject: string;
-    method: string;
-    extIdField: string;
-    query: string;
-    time: string;
-};
+import { SnowflakeImportResult } from '../types';
 export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
     static readonly summary: string;
     static readonly description: string;
@@ -21,8 +13,8 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
         extIdField: import("@oclif/core/lib/interfaces").OptionFlag<string, import("@oclif/core/lib/interfaces/parser").CustomOptions>;
         query: import("@oclif/core/lib/interfaces").OptionFlag<string, import("@oclif/core/lib/interfaces/parser").CustomOptions>;
     };
-    private snowflakeConn;
     private arrayToCSV;
+    private snowflakeConn;
     private salesforceBulk;
     run(): Promise<SnowflakeImportResult>;
 }

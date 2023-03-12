@@ -1,7 +1,18 @@
+import * as fs from 'fs';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Connection, Messages } from '@salesforce/core';
 import {snowflake} from 'snowflake-sdk';
 import * as sfbulk2 from 'node-sf-bulk2';
+// import {SnowflakeImportResult} from '../types'
+export type SnowflakeImportResult = {
+  account: string;
+  username: string;
+  sobject: string;
+  method: string;
+  extIdField: string;
+  query: string;
+  time: string;
+};
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.load('snarf', 'snowflake.import', [
@@ -16,16 +27,6 @@ const messages = Messages.load('snarf', 'snowflake.import', [
   'flags.query.summary',
   'info.snowflake',
 ]);
-
-export type SnowflakeImportResult = {
-  account: string;
-  username: string;
-  sobject: string;
-  method: string;
-  extIdField: string;
-  query: string;
-  time: string;
-};
 
 export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
     public static readonly summary = messages.getMessage('summary');
@@ -74,7 +75,9 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
       return csv.join('\n');
     }
 
-    private async snowflakeConn(account:string, username:string, sql:string): Promise<any> {
+    private async snowflakeConn(account:string, username:string, sql:string) {
+      const statement = fs.readFileSync(sql, "utf8");
+
       const connection = snowflake.createConnection({
         // account: "sga53801",
         // username: "mnewell",
@@ -85,8 +88,8 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
       connection.connectAsync()
       .then(() => {
         connection.execute({
-          sqlText: sql,
-          complete: function (err, stmt, rows) {
+          sqlText: statement,
+          complete: (err, stmt, rows) => {
             if (err) {
               console.error(
                 "Failed to execute statement due to the following error: " +
@@ -102,7 +105,7 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
       })
     }
 
-    private async salesforceBulk(conn:Connection, sobject:string, operation:string, extIdField:string, transientData:any): Promise<any> {
+    private async salesforceBulk(conn:Connection, sobject:string, operation:string, extIdField:string, transientData) {
       const bulkConnect = {
         'accessToken': conn.accessToken,
         'apiVersion': '51.0',
