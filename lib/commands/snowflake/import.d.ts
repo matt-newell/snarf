@@ -1,4 +1,6 @@
 import { SfCommand } from '@salesforce/sf-plugins-core';
+import { Connection } from '@salesforce/core';
+import * as sfbulk2 from 'node-sf-bulk2';
 export type SnowflakeImportResult = {
     account: string;
     username: string;
@@ -21,8 +23,8 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
         extIdField: import("@oclif/core/lib/interfaces").OptionFlag<string, import("@oclif/core/lib/interfaces/parser").CustomOptions>;
         query: import("@oclif/core/lib/interfaces").OptionFlag<string, import("@oclif/core/lib/interfaces/parser").CustomOptions>;
     };
-    private arrayToCSV;
-    private snowflakeConn;
-    private salesforceBulk;
+    arrayToCSV(data: any): any;
+    snowflakeConn(account: string, username: string, sql: string): Promise<void>;
+    salesforceBulk(conn: Connection, sobject: string, operation: string, extIdField: string, transientData: any): Promise<sfbulk2.JobUploadResponse>;
     run(): Promise<SnowflakeImportResult>;
 }
