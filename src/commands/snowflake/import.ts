@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { readFile } from 'fs/promises';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Connection, Messages } from '@salesforce/core';
 import {snowflake} from 'snowflake-sdk';
@@ -76,7 +76,7 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
     }
 
     public async snowflakeConn(account:string, username:string, sql:string) {
-      const sqlQuery = fs.readFileSync(sql,{encoding:'utf8', flag:'r'})
+      const sqlQuery = await readFile(sql,{encoding:'utf8', flag:'r'})
 
       const connection = snowflake.createConnection({
         account: account,
