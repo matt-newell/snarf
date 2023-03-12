@@ -80,6 +80,53 @@
       },
       "args": {},
       "hasDynamicHelp": true
+    },
+    "snowflake:query": {
+      "id": "snowflake:query",
+      "summary": "Snowflake ❄️ > Query 🔎",
+      "description": "snowflake query\n• Account\n• User\n• Query",
+      "strict": true,
+      "pluginName": "snarf",
+      "pluginAlias": "snarf",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "snowflake query -a Account -u User -q Query:\n<%= config.bin %> <%= command.id %>",
+        "Say hello to someone you know:\n<%= config.bin %> <%= command.id %> -a ${Account} -u ${User} -q ${Query}"
+      ],
+      "flags": {
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "description": "Format output as json.",
+          "helpGroup": "GLOBAL",
+          "allowNo": false
+        },
+        "account": {
+          "name": "account",
+          "type": "option",
+          "char": "a",
+          "summary": "The Account for Snowflake ❄️",
+          "required": true,
+          "multiple": false
+        },
+        "username": {
+          "name": "username",
+          "type": "option",
+          "char": "u",
+          "summary": "The Username for Snowflake ❄️",
+          "required": true,
+          "multiple": false
+        },
+        "query": {
+          "name": "query",
+          "type": "option",
+          "char": "q",
+          "summary": "The query of the data you'd like to sync ❄️.",
+          "multiple": false
+        }
+      },
+      "args": {}
     }
   }
 }

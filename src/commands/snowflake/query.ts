@@ -68,6 +68,10 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
             } else {
               // console.log("Number of rows produced: " + rows.length)
               // return bulkv2(JSON.parse(JSON.stringify(rows)))
+              if(err) {
+                  console.log(err)
+                  return stmt
+              }
               return rows
             }
           },
