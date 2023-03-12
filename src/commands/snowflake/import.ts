@@ -76,8 +76,9 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
     }
 
     private async snowflakeConn(account:string, username:string, sql:string) {
-      const statement = fs.readFileSync(sql, "utf8");
 
+      console.log(sql);
+      
       const connection = snowflake.createConnection({
         account: account,
         username: username,
@@ -86,7 +87,7 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
       connection.connectAsync()
       .then(() => {
         connection.execute({
-          sqlText: statement,
+          sqlText: sql,
           complete: (err, stmt, rows) => {
             if (err) {
               console.error(
@@ -133,6 +134,8 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
     public async run(): Promise<SnowflakeImportResult> {
       const { flags } = await this.parse(SnowflakeImport);
       const time = new Date().toDateString();
+
+      console.log(flags.account, flags.username, flags.query);
 
       const sqlQuery = fs.readFileSync(flags.query,{encoding:'utf8', flag:'r'})
 
