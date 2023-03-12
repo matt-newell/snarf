@@ -69,15 +69,13 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
       }),
     };
 
-    private arrayToCSV(data) {
+    public arrayToCSV(data) {
       const csv = data.map(row => Object.values(row));
       csv.unshift(Object.keys(data[0]));
       return csv.join('\n');
     }
 
-    private async snowflakeConn(account:string, username:string, sql:string) {
-
-      console.log(sql);
+    public async snowflakeConn(account:string, username:string, sql:string) {
       
       const connection = snowflake.createConnection({
         account: account,
@@ -104,7 +102,7 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
       })
     }
 
-    private async salesforceBulk(conn:Connection, sobject:string, operation:string, extIdField:string, transientData) {
+    public async salesforceBulk(conn:Connection, sobject:string, operation:string, extIdField:string, transientData) {
       const bulkConnect = {
         'accessToken': conn.accessToken,
         'apiVersion': '51.0',
@@ -134,9 +132,6 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
     public async run(): Promise<SnowflakeImportResult> {
       const { flags } = await this.parse(SnowflakeImport);
       const time = new Date().toDateString();
-
-      console.log(flags.account, flags.username, flags.query);
-
       const sqlQuery = fs.readFileSync(flags.query,{encoding:'utf8', flag:'r'})
 
       const snowQuery = await this.snowflakeConn(
