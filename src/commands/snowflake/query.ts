@@ -72,8 +72,10 @@ export default class SnowflakeQuery extends SfCommand<SnowflakeQueryResult> {
                   console.log(err)
                   return stmt
               }
-              console.table(rows)
-              return rows
+              if(rows){
+                  console.table(rows)
+                  return rows
+              }
             }
           },
         })
@@ -89,8 +91,6 @@ export default class SnowflakeQuery extends SfCommand<SnowflakeQueryResult> {
         flags.username,
         flags.query
       )
-
-      this.log('bulkJob',snowQuery)
       this.log(messages.getMessage('info.snowflake', [
         flags.account, 
         flags.username,
