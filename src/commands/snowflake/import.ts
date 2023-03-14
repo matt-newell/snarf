@@ -89,24 +89,16 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
         connection.execute({
           sqlText: sqlQuery,
           complete: async (err, stmt, rows) => {
-            if(err) {
-              console.log(err)
-              return stmt
-            }
             if(rows){
-                console.table(rows)
-                return rows
+              // console.table(rows)
+              return JSON.parse(JSON.stringify(rows))
             }
             if (err) {
+              console.log(err)
               console.error(
                 "Failed to execute statement due to the following error: " +
                 err.message
               )
-            } else {
-              // console.log("Number of rows produced: " + rows.length)
-              // return bulkv2(JSON.parse(JSON.stringify(rows)))
-              // return rows
-              return JSON.parse(JSON.stringify(rows))
             }
           },
         })
@@ -151,7 +143,7 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
       )
 
       const conn = flags['target-org'].getConnection();
-      const bulkJob = this.salesforceBulk(conn, flags.sobject, flags.method, flags.extIdField, snowQuery)
+      const bulkJob = await this.salesforceBulk(conn, flags.sobject, flags.method, flags.extIdField, snowQuery)
 
       this.log('bulkJob',bulkJob)
       this.log(messages.getMessage('info.snowflake', [
