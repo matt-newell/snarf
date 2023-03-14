@@ -10,7 +10,42 @@
 
 <!-- commands -->
 
-- [`sf snarf snowflake import`](#sf-hello-world)
+- [`sf snarf snowflake query`](#snarf-snowflake-query)
+## `snarf snowflake query`
+```
+Snowflake ❄️ > Query 🔎
+
+USAGE
+  $ sf snowflake query -a <value> -u <value> [--json] [-q <value>]
+
+FLAGS
+  -a, --account=<value>   (required) The Account for Snowflake ❄️
+  -q, --query=<value>     The query of the data you'd like to sync ❄️.
+  -u, --username=<value>  (required) The Username for Snowflake ❄️
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Snowflake ❄️ > Query 🔎
+
+  snowflake query
+  • Account
+  • User
+  • Query
+
+EXAMPLES
+  snowflake query -a Account -u User -q Query:
+
+    $ sf snowflake query
+
+  Say hello to someone you know:
+
+    $ sf snowflake query -a ${Account} -u ${User} -q ${Query}
+
+```
+
+- [`sf snarf snowflake import`](#sf-snarf-snowflake-import)
 
 ## `snarf snowflake import`
 

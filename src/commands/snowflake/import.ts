@@ -70,7 +70,7 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
       }),
     };
 
-    public arrayToCSV(data) {
+    public async arrayToCSV(data) {
       const csv = data.map(row => Object.values(row));
       csv.unshift(Object.keys(data[0]));
       return csv.join('\n');
@@ -88,7 +88,15 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
       .then(() => {
         connection.execute({
           sqlText: sqlQuery,
-          complete: (err, stmt, rows) => {
+          complete: async (err, stmt, rows) => {
+            if(err) {
+              console.log(err)
+              return stmt
+            }
+            if(rows){
+                console.table(rows)
+                return rows
+            }
             if (err) {
               console.error(
                 "Failed to execute statement due to the following error: " +
@@ -97,7 +105,8 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
             } else {
               // console.log("Number of rows produced: " + rows.length)
               // return bulkv2(JSON.parse(JSON.stringify(rows)))
-              return rows
+              // return rows
+              return JSON.parse(JSON.stringify(rows))
             }
           },
         })
@@ -121,7 +130,7 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
       // request job
       const response = await bulkrequest.createDataUploadJob(jobRequest)
       if (response.id) {
-        const status = await bulkrequest.uploadJobData(response.contentUrl, this.arrayToCSV(transientData))
+        const status = await bulkrequest.uploadJobData(response.contentUrl, await this.arrayToCSV(transientData))
         console.log('status', JSON.stringify(status))
         if (status === 201) {
             // close the job for processing
