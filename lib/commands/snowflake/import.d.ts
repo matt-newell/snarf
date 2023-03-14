@@ -23,7 +23,7 @@ export default class SnowflakeImport extends SfCommand<SnowflakeImportResult> {
         extIdField: import("@oclif/core/lib/interfaces").OptionFlag<string, import("@oclif/core/lib/interfaces/parser").CustomOptions>;
         query: import("@oclif/core/lib/interfaces").OptionFlag<string, import("@oclif/core/lib/interfaces/parser").CustomOptions>;
     };
-    arrayToCSV(data: any): any;
+    arrayToCSV(data: any): Promise<any>;
     snowflakeConn(account: string, username: string, sql: string): Promise<void>;
     salesforceBulk(conn: Connection, sobject: string, operation: string, extIdField: string, transientData: any): Promise<sfbulk2.JobUploadResponse>;
     run(): Promise<SnowflakeImportResult>;
